@@ -16,6 +16,7 @@ namespace GdalApi.Model.Domain.Object {
             MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
         #region --- [ Fields ] ---
+        private int m_iBandNum;
         private Bitmap m_tBitmap;
         private Dataset m_tGdalDs;
         private Driver m_tGdalDriver;
@@ -43,12 +44,18 @@ namespace GdalApi.Model.Domain.Object {
                 return m_tBitmap;
             }
         }
+        public int BandNumber {
+            get {
+                return m_iBandNum;
+            }
+        }
         #endregion
         #region --- [ Constructor ] ---
-        public GeoTiffObject(string strGeoTiffPath) {
+        public GeoTiffObject(string strGeoTiffPath, int iBundNum) {
             //================================================================
             // Initialize
             //================================================================
+            m_iBandNum = iBundNum;
             m_strGeoTiffPath = Path.GetFullPath(strGeoTiffPath);
 
             //================================================================
@@ -391,7 +398,7 @@ namespace GdalApi.Model.Domain.Object {
             //================================================================
             // Create a Bitmap to store the GDAL image in
             //================================================================
-            m_tBitmap = new Bitmap(width, height, PixelFormat.Format32bppRgb);
+            m_tBitmap = new Bitmap(width, height, PixelFormat.Format32bppArgb);
 
             DateTime start = DateTime.Now;
 
@@ -399,21 +406,24 @@ namespace GdalApi.Model.Domain.Object {
             byte[] g = new byte[width * height];
             byte[] b = new byte[width * height];
 
+
             redBand.ReadRaster(0, 0, width, height, r, width, height, 0, 0);
             greenBand.ReadRaster(0, 0, width, height, g, width, height, 0, 0);
             blueBand.ReadRaster(0, 0, width, height, b, width, height, 0, 0);
 
             TimeSpan renderTime = DateTime.Now - start;
-            m_ctrlLogger.DebugFormat("getBitmapBuffered fetch time: {0} ms",
-                renderTime.TotalMilliseconds);
+            m_ctrlLogger.DebugFormat("getBitmapBuffered fetch time [{0}]: {1} ms",
+                Path.GetFileName(m_strGeoTiffPath), renderTime.TotalMilliseconds);
 
             //================================================================
             // Create bitmap(SetPixel)
             //================================================================
             for (int i = 0; i < width; i++) {
                 for (int j = 0; j < height; j++) {
-                    Color newColor = Color.FromArgb(Convert.ToInt32(r[i + j * width]),
-                        Convert.ToInt32(g[i + j * width]), Convert.ToInt32(b[i + j * width]));
+                    Color newColor = Color.FromArgb(
+                        Convert.ToInt32(r[i + j * width]),
+                        Convert.ToInt32(g[i + j * width]),
+                        Convert.ToInt32(b[i + j * width]));
                     m_tBitmap.SetPixel(i, j, newColor);
                 }
             }
@@ -494,8 +504,8 @@ namespace GdalApi.Model.Domain.Object {
 
             band.ReadRaster(0, 0, width, height, r, width, height, 0, 0);
             TimeSpan renderTime = DateTime.Now - start;
-            m_ctrlLogger.DebugFormat("getBitmapBuffered fetch time: {0} ms",
-                renderTime.TotalMilliseconds);
+            m_ctrlLogger.DebugFormat("getBitmapBuffered fetch time [{0}]: {1} ms",
+                Path.GetFileName(m_strGeoTiffPath), renderTime.TotalMilliseconds);
 
             //================================================================
             // Create bitmap(SetPixel)
@@ -536,8 +546,8 @@ namespace GdalApi.Model.Domain.Object {
 
             band.ReadRaster(0, 0, width, height, r, width, height, 0, 0);
             TimeSpan renderTime = DateTime.Now - start;
-            m_ctrlLogger.DebugFormat("getBitmapBuffered fetch time: {0} ms",
-                renderTime.TotalMilliseconds);
+            m_ctrlLogger.DebugFormat("getBitmapBuffered fetch time [{0}]: {1} ms",
+                Path.GetFileName(m_strGeoTiffPath), renderTime.TotalMilliseconds);
 
             //================================================================
             // Create bitmap(SetPixel)

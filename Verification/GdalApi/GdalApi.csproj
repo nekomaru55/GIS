@@ -69,6 +69,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\Domain\Mapper\GeoTiffMapper.cs" />
     <Compile Include="Model\Domain\Object\GeoTiffObject.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -117,28 +118,14 @@
     <None Include="Resources\test_bqa.tif" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\test_b5.tif" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\test_b6.tif" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\test_b7.tif" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\test_b1.tif" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\test_b2.tif" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\test_b3.tif" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\test_b4.tif" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="app.ico" />
+    <None Include="Resources\test_b7.tif" />
+    <None Include="Resources\test_b6.tif" />
+    <None Include="Resources\test_b5.tif" />
+    <None Include="Resources\test_b4.tif" />
+    <None Include="Resources\test_b3.tif" />
+    <None Include="Resources\test_b2.tif" />
+    <None Include="Resources\test_b1.tif" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

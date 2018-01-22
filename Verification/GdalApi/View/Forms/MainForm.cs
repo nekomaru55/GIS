@@ -1,11 +1,11 @@
-﻿using GdalApi.Model.Domain.Object;
+﻿using GdalApi.Model.Domain.Mapper;
+using GdalApi.Model.Domain.Object;
 using System;
 using System.Windows.Forms;
 
 namespace GdalApi.View.Forms {
     public partial class MainForm : Form {
         #region --- [ Fields ] ---
-        GeoTiffObject m_tGeoTiffObj;
         #endregion
         #region --- [ Constructor ] ---
         public MainForm() {
@@ -14,9 +14,6 @@ namespace GdalApi.View.Forms {
         #endregion
         #region --- [ Events ] ---
         private void MainForm_Load(object sender, EventArgs e) {
-            if (m_tGeoTiffObj == null) {
-                btnSaveBitmap.Enabled = false;
-            }
         }
 
         private void btnSaveBitmap_Click(object sender, EventArgs e) {
@@ -28,20 +25,23 @@ namespace GdalApi.View.Forms {
             sfd.OverwritePrompt = true;
             sfd.CheckPathExists = true;
             if (sfd.ShowDialog() == DialogResult.OK) {
-                m_tGeoTiffObj.save(sfd.FileName);
+                GeoTiffMapper.getObj().Image.Save(sfd.FileName);
             }
         }
 
         private void btnReadGeoTiff_Click(object sender, EventArgs e) {
-            string strPath = @"test_b1.tif";
-            if (m_tGeoTiffObj == null) {
-                m_tGeoTiffObj = new GeoTiffObject(strPath);
-            } else {
-                m_tGeoTiffObj.reload();
+            for (int i = 1; i < Program.FILE_LANDSAT_OUT_IMG.Length; i++) {
+                if (GeoTiffMapper.getObj().getGeoTiffObject(i) == null) {
+                    GeoTiffMapper.getObj().addGeoTiffObject(
+                        new GeoTiffObject(Program.FILE_LANDSAT_OUT_IMG[i - 1], i));
+                }
+            }
+            if (GeoTiffMapper.getObj().Image == null) {
+                GeoTiffMapper.getObj().gdalMerge();
             }
             btnSaveBitmap.Enabled = true;
-            textBox1.Text = m_tGeoTiffObj.gdalInfoText;
-            pictureBox1.Image = m_tGeoTiffObj.Image;
+            pictureBox1.Image = GeoTiffMapper.getObj().Image;
+            textBox1.Text = GeoTiffMapper.getObj().GdalInfoText;
         }
         #endregion
     }
